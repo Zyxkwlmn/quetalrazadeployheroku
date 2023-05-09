@@ -18,22 +18,25 @@ const Pet = () => {
                 <label for="name" className="label">Raza</label>
                 <input type="text" id="raze" placeholder="" className="input input-name"/>
 
-                <label for="email" className="label">Género</label>
-                <input type="text" id="gender" placeholder="" className="input input-name"/>
+                <label for="gender" className="label">Género</label>
+                <select id="pet_gender" name="gender" className="input">
+                    <option value="volvo">Hembra</option>
+                    <option value="saab">Macho</option>
+                </select>
 
                 <label for="name" className="label">Fecha de Nacimiento</label>
                 <input type="date" id="birthday" placeholder="" className="input input-name"/>
 
                 <label for="name" className="label">Descripción</label>
-                <input type="text" id="color" placeholder="" className="input input-name"/>
+                <textarea class="" rows="3" ></textarea>
 
                 <label for="password" className="label">¿Deseas que conoscamos más a tu mascota? Sube una foto!</label>
-                <input type="file" id="photo" placeholder="" className="secondary-button"/>
+                <input type="file" id="photo" placeholder=""/>
 
                 </div>
 
-                <input type="submit" value="Continuar" className="primary-button login-button"/>
-                <input type="submit" value="Cancelar" className="secondary-button login-button"/>
+                <input type="submit" value="Registrar" className="primary-button login-button"/>
+                <input type="submit" value="Descartar" className="secondary-button login-button"/>
 
             </form>
             </div>

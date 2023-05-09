@@ -12,6 +12,7 @@ import OrderResume from '../containers/_OrderResume';
 import Session from '../containers/Session';
 import Orders from '../containers/_Orders';
 import AppContext from '../context/AppContext';
+import Client from '../containers/Client';
 import '../styles/global.css';
 import useInitialState from '../hooks/useInitialState';
 
@@ -27,6 +28,7 @@ const App = () => {
                         <Route exact path="/login" element={<Login/>}/>
                         <Route exact path="account" element={<Account/>}/>
                         <Route exact path="appointment" element={<Appointment/>}/>
+                        <Route exact path="client" element={<Client/>}/>
                         <Route exact path="pet" element={<Pet/>}/>
                         <Route exact path="order" element={<OrderResume/>}/>
                         <Route exact path="session" element={<Session/>}/>

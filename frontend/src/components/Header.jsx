@@ -26,9 +26,6 @@ const Header = () => {
 
             <ul>
               <li>
-                <a href="/">Inicio</a>
-              </li>
-              <li>
                 <a href="/">Clientes</a>
               </li>
               <li>
@@ -38,7 +35,7 @@ const Header = () => {
                 <a href="/">Citas</a>
               </li>
               <li>
-                <a href="/">Historial_Clínico</a>
+                <a href="/">HistorialClínico</a>
               </li>
             </ul>
           </div>
@@ -47,7 +44,7 @@ const Header = () => {
             <ul>
               <li className="navbar-email" onClick={handleToggle}>username@example.com</li>
               <li className="navbar-shopping-cart" onClick={() => setToggleOrders(!toggleOrders)}>
-              <img src={usuario} alt="shopping cart"/></li>
+              <img src={usuario} alt="usuario" className="usuario"/></li>
               {state.cart.length > 0 ? <div>{state.cart.length}</div> : null} 
             </ul>
           </div>
