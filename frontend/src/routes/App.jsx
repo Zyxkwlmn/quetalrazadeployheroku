@@ -8,6 +8,9 @@ import EditClient from '../pages/EditClient';
 import ListPet from '../pages/ListPet';
 import CreatePet from '../pages/CreatePet';
 import EditPet from '../pages/EditPet';
+import CreateAppo from '../pages/CreateAppo';
+import ListAppo from '../pages/ListAppo';
+import EditAppo from '../pages/EditAppo';
 import NotFound from '../pages/NotFound';
 import Account from '../containers/Account';
 import '../styles/global.css';
@@ -25,6 +28,9 @@ const App = () => {
                         <Route exact path="/ListPet/:id" element={<ListPet/>}/>
                         <Route exact path="/CreatePet/:id" element={<CreatePet/>}/>
                         <Route exact path="/EditPet/:id" element={<EditPet/>}/>
+                        <Route exact path="/CreateAppo/:id" element={<CreateAppo/>}/>
+                        <Route exact path="/ListAppo/:id" element={<ListAppo/>}/>
+                        <Route exact path="/EditAppo/:id" element={<EditAppo/>}/>
                         <Route exact path="account" element={<Account/>}/>
                         <Route path="*" element={<NotFound/>}/>
                     </Routes>        

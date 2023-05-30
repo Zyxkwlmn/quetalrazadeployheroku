@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
+import '../styles/List.scss';
+import swal from 'sweetalert';
 
 
 const Home = () => {
+
     const [data, setData] = useState([])
     useEffect(()=>{
         axios.get('http://localhost:8080/')
@@ -15,17 +18,27 @@ const Home = () => {
     const handleDelete = (id) => {
         axios.delete('http://localhost:8080/DeleteClient/'+id)
         .then(res=> {
-            alert("Eliminando")
-            location.reload();
+            swal({
+                text: "Eliminando registro",
+                icon: "warning",
+              });
+              setTimeout(function(){
+                location.reload();
+            }, 3000);
+            
         }).catch(err => console.log(err))
     }
     return(
         <>
             <Header />
+            <div className="list-content">
+            <div><h3>Clientes</h3></div>
             <div>
-                <Link to="/CreateClient">Nuevo Cliente</Link>
+                <input class="input-inset" type="text" placeholder="Search"/> 
+                <Link to="/CreateClient" className="button create-button">Nuevo Cliente</Link>
             </div>
-           <table>
+            <div>
+           <table className="styled-table">
             <thead>
                 <tr>
                     <th>N°</th>
@@ -45,14 +58,16 @@ const Home = () => {
                         <td>{user.addressUser}</td>
                         <td>{user.phoneUser}</td>
                         <td>
-                            <Link to={`/ListPet/${user.idUser}`}>Mascotas</Link>
-                            <Link to={`/EditClient/${user.idUser}`}>Editar</Link>
-                            <button onClick={() =>handleDelete(user.idUser)}>Eliminar</button>
+                            <Link to={`/ListPet/${user.idUser}`} className="button pet-button">Mascotas</Link>
+                            <Link to={`/EditClient/${user.idUser}`} className="button edit-button">Editar</Link>
+                            <a onClick={() =>handleDelete(user.idUser)} className="button delete-button">Eliminar</a>
                         </td>
                     </tr>
                 })}
             </tbody>
            </table>
+           </div>
+           </div>
         </>  
     );
 }

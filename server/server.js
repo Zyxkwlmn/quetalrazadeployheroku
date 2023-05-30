@@ -15,16 +15,25 @@ const db = mysql.createConnection({
 })
 
 //APPOINTMENT
-app.get('/ListAppo',(req,res) => {
+app.get('/ListAppo/:id',(req,res) => {
+    const sql = "SELECT `Appointment`.`idAppointment`, `Appointment`.`dateAppointment`, `Appointment`.`reasonAppointment`, `Appointment`.`statusAppointment`,`Appointment`.`timeAppointment` FROM Appointment INNER JOIN Pet ON `Appointment`.`idPet` = `Pet`.`idPet` WHERE `Pet`.`idPet` = ?";
+    const id = req.params.id;
+    db.query(sql, [id],(err, result) => {
+        if (err) return res.json({Message: "Error inside server"});
+        return res.json(result);
+    })
+})
+
+app.get('/ListAppoAll',(req,res) => {
     const sql = "SELECT `Appointment`.`idAppointment`, `Pet`.`namePet`, `Pet`.`speciePet`, `Pet`.`genderPet`, `Appointment`.`dateAppointment`, `Appointment`.`reasonAppointment`, `Appointment`.`statusAppointment`,`Appointment`.`timeAppointment` FROM Appointment INNER JOIN Pet ON `Appointment`.`idPet` = `Pet`.`idPet`";
-    db.query(sql, (err, result) => {
+    db.query(sql, [id],(err, result) => {
         if (err) return res.json({Message: "Error inside server"});
         return res.json(result);
     })
 })
 
 app.get('/ReadAppo/:id',(req,res) => {
-    const sql = "SELECT `Appointment`.`idAppointment`, `Pet`.`namePet`, `Pet`.`speciePet`, `Pet`.`genderPet`, `Appointment`.`dateAppointment`, `Appointment`.`reasonAppointment`, `Appointment`.`statusAppointment`,`Appointment`.`timeAppointment`, `Appointment`.`reasonAppointment`  FROM Appointment INNER JOIN Pet ON `Appointment`.`idPet` = `Pet`.`idPet` WHERE `Appointment`.`idAppointment` = ?";
+    const sql = "SELECT `Appointment`.`idAppointment`, `Pet`.`namePet`, `Pet`.`speciePet`, `Pet`.`genderPet`, `Appointment`.`dateAppointment`, `Appointment`.`commentAppointment`, `Appointment`.`statusAppointment`,`Appointment`.`timeAppointment`, `Appointment`.`reasonAppointment`  FROM Appointment INNER JOIN Pet ON `Appointment`.`idPet` = `Pet`.`idPet` WHERE `Appointment`.`idAppointment` = ?";
     const id = req.params.id;
     db.query(sql,[id], (err,result) => {
         if(err) return res.json({Message: "Error inside server"});
@@ -57,6 +66,16 @@ app.put('/UpdateAppo/:id', (req, res) => {
         return res.json(result);
     })   
 })
+
+app.delete('/DeleteAppo/:id', (req, res) => {
+    const sql = "DELETE FROM Appointment WHERE `idAppointment` = ?";
+    const id = req.params.id;
+    db.query(sql, [id],(err,result) =>{
+        if(err) return res.json({Message: "Error inside server"});
+        return res.json(result);
+    })   
+})
+
 
 //PET
 app.get('/ListPet/:id',(req,res) => {

@@ -5,19 +5,19 @@ import {Link} from 'react-router-dom';
 import {useNavigate, useParams} from 'react-router-dom';
 
 
-const ListPet = () => {
+const ListAppo = () => {
 
     const {id} = useParams();
 
     const [data, setData] = useState([])
     useEffect(()=>{
-        axios.get('http://localhost:8080/ListPet/'+id)
+        axios.get('http://localhost:8080/ListAppo/'+id)
         .then(res => setData(res.data))
         .catch(err => console.log(err));
     }, [])
 
     const handleDelete = (id) => {
-        axios.delete('http://localhost:8080/DeletePet/'+id)
+        axios.delete('http://localhost:8080/DeleteAppo/'+id)
         .then(res=> {
             alert("Eliminando")
             location.reload();
@@ -26,33 +26,28 @@ const ListPet = () => {
     return(
         <>
             <Header />
-            <div>
-                <Link to={`/CreatePet/${id}`}>Nueva Mascota</Link>
-            </div>
            <table>
             <thead>
                 <tr>
                     <th>N°</th>
-                    <th>Nombre</th>
-                    <th>Especie</th>
-                    <th>Raza</th>
-                    <th>Género</th>
-                    <th>Fecha Nacimiento</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Motivo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                {data.map((pet,index) => {
+                {data.map((appo,index) => {
                     return <tr key={index}>
                         <td>{index + 1}</td>
-                        <td>{pet.namePet}</td>
-                        <td>{pet.speciePet}</td>
-                        <td>{pet.racePet}</td>
-                        <td>{pet.genderPet}</td>
-                        <td>{pet.birthdatePet}</td>
+                        <td>{appo.dateAppointment}</td>
+                        <td>{appo.timeAppointment}</td>
+                        <td>{appo.reasonAppointment}</td>
+                        <td>{appo.statusAppointment}</td>
                         <td>
-                            <Link to={`/CreateAppo/${pet.idPet}`}>Citas</Link>
-                            <Link to={`/EditPet/${pet.idPet}`}>Editar</Link>
-                            <button onClick={() =>handleDelete(pet.idPet)}>Eliminar</button>
+                            <Link to={`/EditAppo/${appo.idAppointment}`}>Editar</Link>
+                            <button onClick={() =>handleDelete(appo.idAppointment)}>Eliminar</button>
                         </td>
                     </tr>
                 })}
@@ -62,4 +57,4 @@ const ListPet = () => {
     );
 }
 
-export default ListPet;
+export default ListAppo;

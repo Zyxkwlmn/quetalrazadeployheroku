@@ -3,6 +3,7 @@ import Header from '../components/Header';
 import axios from 'axios';
 import '../styles/Client.scss';
 import {useNavigate} from 'react-router-dom';
+import swal from 'sweetalert';
 
 const CreateClient = () => {
 
@@ -29,6 +30,8 @@ const CreateClient = () => {
     }
 
 return(
+<>
+<Header/>
 
 <div className="client">
             <div className="form-container">
@@ -53,13 +56,13 @@ return(
                 <label for="name" className="label">N° de celular</label>
                 <input type="text" id="phone" placeholder="" className="input input-text" onChange={e => setValues({...values,phone: e.target.value})}/>
 
-                <input type="submit" value="Registrar" className="primary-button login-button"/> 
-                <input type="button" value="Descartar" className="secondary-button login-button"/>
+                <input type="submit" value="Registrar" className="primary-button"/> 
+                <input type="button" value="Descartar" className="secondary-button"/>
                                
             </form>
             </div>
         </div>
-
+        </>
 )
 }
 
