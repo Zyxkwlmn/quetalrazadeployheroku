@@ -9,14 +9,6 @@ import MyOrder from '../containers/_OrderResume';
 
 const Header = () => {
 
-    const [toggle, setToggle] = useState(false);
-    const [toggleOrders, setToggleOrders] = useState(false);
-    const { state } = useContext(AppContext);  
-
-    const handleToggle = () => {
-      setToggle(!toggle);
-    }
-
     return (
         <nav>
           <img src={menu} alt="menu" className="menu"/>
@@ -42,14 +34,11 @@ const Header = () => {
 
           <div className="navbar-right">
             <ul>
-              <li className="navbar-email" onClick={handleToggle}>username@example.com</li>
-              <li className="navbar-shopping-cart" onClick={() => setToggleOrders(!toggleOrders)}>
+              <li className="navbar-email" >username@example.com</li>
+              <li className="navbar-shopping-cart">
               <img src={usuario} alt="usuario" className="usuario"/></li>
-              {state.cart.length > 0 ? <div>{state.cart.length}</div> : null} 
-            </ul>
+             </ul> 
           </div>
-          {toggle && <Menu />}
-          {toggleOrders && <MyOrder />}
       </nav>
     );
 }
