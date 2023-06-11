@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Layout from '../containers/Layout';
-import Login from '../containers/Login';
+import Login from '../pages/Login';
 import Home from '../pages/Home';
 import CreateClient from '../pages/CreateClient';
 import EditClient from '../pages/EditClient';
@@ -29,7 +29,7 @@ const App = () => {
                         <Route exact path="/CreatePet/:id" element={<CreatePet/>}/>
                         <Route exact path="/EditPet/:id" element={<EditPet/>}/>
                         <Route exact path="/CreateAppo/:id" element={<CreateAppo/>}/>
-                        <Route exact path="/ListAppo/:id" element={<ListAppo/>}/>
+                        <Route exact path="/ListAppo" element={<ListAppo/>}/>
                         <Route exact path="/EditAppo/:id" element={<EditAppo/>}/>
                         <Route exact path="account" element={<Account/>}/>
                         <Route path="*" element={<NotFound/>}/>

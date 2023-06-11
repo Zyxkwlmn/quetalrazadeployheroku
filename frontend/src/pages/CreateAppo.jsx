@@ -3,6 +3,7 @@ import Header from '../components/Header';
 import axios from 'axios';
 import '../styles/Client.scss';
 import {useNavigate, useParams} from 'react-router-dom';
+import swal from 'sweetalert';
 
 const CreateAppointment = () => {
     const {id} = useParams();
@@ -39,8 +40,14 @@ const CreateAppointment = () => {
         e.preventDefault();
         axios.post('http://localhost:8080/CreateAppo',values)
         .then(res => {
-            console.log(res),
-            navigate('/ListAppo/'+id)
+            swal({
+                text: "Cita reservada",
+                icon: "success",
+              });
+              setTimeout(function(){
+                navigate('/ListAppo/'+id);
+            }, 3000);
+            
         })
         .catch(err => console.log(err))
     }
@@ -48,7 +55,7 @@ const CreateAppointment = () => {
 return(
 <>
 <Header />
- <div className="appointment">
+ <div className="client">
             <div className="form-container">
             <h1 className="title">Reservar cita</h1>
 
@@ -71,13 +78,14 @@ return(
 
                 <label for="status" className="label">Estatus</label>
                 <select id="status" name="status" className="input" onChange={e => setValues({...values,status: e.target.value})}>
+                    <option selected>Seleccionar</option>
                     <option value="Programado">Programado</option>
                     <option value="Realizado">Realizado</option>
                     <option value="Cancelado">Cancelado</option>
                 </select>
-
-                <input type="button" value="Descartar" className="secondary-button login-button"/>
-                <input type="submit" value="Reservar" className="primary-button login-button"/>
+                
+                <input type="submit" value="Reservar" className="primary-button"/> 
+                <input type="button" value="Descartar" className="secondary-button"/>
 
                 </div>
 

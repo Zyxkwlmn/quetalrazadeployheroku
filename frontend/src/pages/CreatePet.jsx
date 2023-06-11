@@ -3,6 +3,7 @@ import Header from '../components/Header';
 import axios from 'axios';
 import '../styles/Pet.scss';
 import {useNavigate,useParams} from 'react-router-dom';
+import swal from 'sweetalert';
 
 const CreatePet = () => {
 
@@ -25,8 +26,13 @@ const CreatePet = () => {
         e.preventDefault();
         axios.post('http://localhost:8080/CreatePet/'+id,values)
         .then(res => {
-            console.log(res),
-            navigate('/ListPet/'+id)
+            swal({
+                text: "Mascota registrada",
+                icon: "success",
+              });
+              setTimeout(function(){
+                navigate('/ListPet/'+id);
+            }, 3000);
         })
         .catch(err => console.log(err))
     }
@@ -52,6 +58,7 @@ return(
 
                 <label for="gender" className="label">Género</label>
                 <select id="gender" name="gender" className="input" onChange={e => setValues({...values,gender: e.target.value})}>
+                    <option selected>Seleccionar</option>
                     <option value="Hembra">Hembra</option>
                     <option value="Macho">Macho</option>
                 </select>
@@ -60,16 +67,14 @@ return(
                 <input type="date" id="birthday" className="input input-name" onChange={e => setValues({...values,birthday: e.target.value})}/>
 
                 <label for="name" className="label">Descripción</label>
-                <textarea className="" rows="3" id="description" onChange={e => setValues({...values,description: e.target.value})}></textarea>
+                <textarea className="textarea" rows="3" id="description" onChange={e => setValues({...values,description: e.target.value})}></textarea>
 
                 <label for="password" className="label">¿Deseas que conoscamos más a tu mascota? Sube una foto!</label>
-                <input type="file" id="photo" placeholder=""/>
-
+                <input type="file" id="photo" placeholder="" className="file"/>
                 </div>
 
-                <input type="submit" value="Registrar" className="primary-button login-button"/>
-                <input type="submit" value="Descartar" className="secondary-button login-button"/>
-
+                <input type="submit" value="Registrar" className="primary-button"/> 
+                <input type="button" value="Descartar" className="secondary-button"/>
             </form>
             </div>
         </div>

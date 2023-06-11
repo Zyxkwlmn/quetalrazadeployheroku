@@ -3,6 +3,7 @@ import Header from '../components/Header';
 import axios from 'axios';
 import '../styles/Pet.scss';
 import {useNavigate, useParams} from 'react-router-dom';
+import swal from 'sweetalert';
 
 const EditPet = () => {
     const {id} = useParams();
@@ -38,8 +39,14 @@ const EditPet = () => {
         event.preventDefault();
         axios.put('http://localhost:8080/UpdatePet/'+id, values)
         .then(res => {
-            console.log(res)
-            navigate('/')
+            console.log(res);
+            swal({
+                text: "Registro de mascota actualizado",
+                icon: "success",
+              });
+              setTimeout(function(){
+                navigate('/');
+            }, 3000);
         }).catch(err => console.log(err))
     }
 return(
@@ -70,13 +77,13 @@ return(
                 <input type="date" id="birthday" required pattern="\d{4}-\d{2}-\d{2}" className="input input-name" onChange={e => setValues({...values,birthday: e.target.value})} value={values.birthday}/>
 
                 <label for="name" className="label">Descripción</label>
-                <textarea className="" rows="3" id="description" onChange={e => setValues({...values,description: e.target.value})} value={values.description}></textarea>
-                name
-                <label for="password" className="label">¿Deseas que conoscamos más a tu mascota? Sube una foto!</label>
+                <textarea className="textarea" rows="3" id="description" onChange={e => setValues({...values,description: e.target.value})} value={values.description}></textarea>
+                
+                <label for="password" className="label">Fotografía</label>
                 <input type="file" id="photo" placeholder=""/>
 
-                <input type="submit" value="Actualizar" className="primary-button login-button"/> 
-                <input type="button" value="Descartar" className="secondary-button login-button"/>
+                <input type="submit" value="Actualizar" className="primary-button"/> 
+                <input type="button" value="Descartar" className="secondary-button"/>
                                
             </form>
             </div>

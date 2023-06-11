@@ -3,6 +3,7 @@ import Header from '../components/Header';
 import axios from 'axios';
 import '../styles/Client.scss';
 import {useNavigate, useParams} from 'react-router-dom';
+import swal from 'sweetalert';
 
 const EditClient = () => {
     const {id} = useParams();
@@ -36,16 +37,20 @@ const EditClient = () => {
         event.preventDefault();
         axios.put('http://localhost:8080/UpdateAppo/'+id, values)
         .then(res => {
-            console.log(res)
-            alert("Actualizado")
-            navigate('/')
+            swal({
+                text: "Registro de cita actualizada",
+                icon: "success",
+              });
+              setTimeout(function(){
+                navigate('/ListAppo');
+            }, 3000);
         }).catch(err => console.log(err))
     }
 return(
 
 <div className="client">
             <div className="form-container">
-            <h1 className="title">Editar Cliente</h1>
+            <h1 className="title">Editar Cita</h1>
 
             <form action="/" className="form" onSubmit={handleUpdate}>
             <div> 
@@ -71,8 +76,8 @@ return(
                     <option value="Cancelado">Cancelado</option>
                 </select>
 
-                <input type="button" value="Descartar" className="secondary-button login-button"/>
-                <input type="submit" value="Reservar" className="primary-button login-button"/>
+                <input type="submit" value="Registrar" className="primary-button"/> 
+                <input type="button" value="Descartar" className="secondary-button"/>
 
                 </div>
                                

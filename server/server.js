@@ -1,6 +1,7 @@
 import express from 'express'
 import mysql from 'mysql'
 import cors from 'cors'
+import jwt from 'jsonwebtoken'
 
 const app = express();
 app.use(cors());
@@ -14,9 +15,26 @@ const db = mysql.createConnection({
     database: "vet"
 })
 
+//LOGIN
+app.post('/login',(req,res) => {
+    const sql = "SELECT * FROM Login WHERE `userLogin` = ? AND `passwordLogin` = ?";
+    db.query(sql, [req.body.user,req.body.password],(err,data) => {
+        if(err) return res.json("Error")
+        if (data.length > 0) {
+            const id = data[0].userLogin;
+            const token = jwt.sign({id},"jwtSecretKey",{expiresIn: 300})
+            return res.json({Login: true, token, data});
+        } else {
+            return res.json("No record")
+        }
+        
+    })
+})
+
+
 //APPOINTMENT
 app.get('/ListAppo/:id',(req,res) => {
-    const sql = "SELECT `Appointment`.`idAppointment`, `Appointment`.`dateAppointment`, `Appointment`.`reasonAppointment`, `Appointment`.`statusAppointment`,`Appointment`.`timeAppointment` FROM Appointment INNER JOIN Pet ON `Appointment`.`idPet` = `Pet`.`idPet` WHERE `Pet`.`idPet` = ?";
+    const sql = "SELECT `Appointment`.`idAppointment`, DATE_FORMAT(`Appointment`.`dateAppointment`, '%Y-%m-%d') as dateAppointment, `Appointment`.`reasonAppointment`, `Appointment`.`statusAppointment`,`Appointment`.`timeAppointment` FROM Appointment INNER JOIN Pet ON `Appointment`.`idPet` = `Pet`.`idPet` WHERE `Pet`.`idPet` = ?";
     const id = req.params.id;
     db.query(sql, [id],(err, result) => {
         if (err) return res.json({Message: "Error inside server"});
@@ -25,15 +43,15 @@ app.get('/ListAppo/:id',(req,res) => {
 })
 
 app.get('/ListAppoAll',(req,res) => {
-    const sql = "SELECT `Appointment`.`idAppointment`, `Pet`.`namePet`, `Pet`.`speciePet`, `Pet`.`genderPet`, `Appointment`.`dateAppointment`, `Appointment`.`reasonAppointment`, `Appointment`.`statusAppointment`,`Appointment`.`timeAppointment` FROM Appointment INNER JOIN Pet ON `Appointment`.`idPet` = `Pet`.`idPet`";
-    db.query(sql, [id],(err, result) => {
+    const sql = "SELECT `Appointment`.`idAppointment`,`User`.`nameUser`,`User`.`phoneUser`, `Pet`.`namePet`, `Pet`.`speciePet`, `Pet`.`genderPet`, DATE_FORMAT(`Appointment`.`dateAppointment`, '%Y-%m-%d') as dateAppointment , `Appointment`.`reasonAppointment`, `Appointment`.`statusAppointment`,`Appointment`.`timeAppointment` FROM Appointment INNER JOIN Pet ON `Appointment`.`idPet` = `Pet`.`idPet` INNER JOIN User ON `User`.`idUser` = `Pet`.`idUser`";
+    db.query(sql, (err, result) => {
         if (err) return res.json({Message: "Error inside server"});
         return res.json(result);
     })
 })
 
 app.get('/ReadAppo/:id',(req,res) => {
-    const sql = "SELECT `Appointment`.`idAppointment`, `Pet`.`namePet`, `Pet`.`speciePet`, `Pet`.`genderPet`, `Appointment`.`dateAppointment`, `Appointment`.`commentAppointment`, `Appointment`.`statusAppointment`,`Appointment`.`timeAppointment`, `Appointment`.`reasonAppointment`  FROM Appointment INNER JOIN Pet ON `Appointment`.`idPet` = `Pet`.`idPet` WHERE `Appointment`.`idAppointment` = ?";
+    const sql = "SELECT `Appointment`.`idAppointment`, `Pet`.`namePet`, `Pet`.`speciePet`, `Pet`.`genderPet`, DATE_FORMAT(`Appointment`.`dateAppointment`, '%Y-%m-%d') as dateAppointment, `Appointment`.`commentAppointment`, `Appointment`.`statusAppointment`,`Appointment`.`timeAppointment`, `Appointment`.`reasonAppointment`  FROM Appointment INNER JOIN Pet ON `Appointment`.`idPet` = `Pet`.`idPet` WHERE `Appointment`.`idAppointment` = ?";
     const id = req.params.id;
     db.query(sql,[id], (err,result) => {
         if(err) return res.json({Message: "Error inside server"});
@@ -79,7 +97,7 @@ app.delete('/DeleteAppo/:id', (req, res) => {
 
 //PET
 app.get('/ListPet/:id',(req,res) => {
-    const sql = "select * from Pet WHERE `Pet`.`idUser` = ?";
+    const sql = "select `idPet`,`idUser`,`namePet`,`speciePet`,`racePet`,DATE_FORMAT(`birthdatePet`, '%Y-%m-%d') as birthdatePet ,`genderPet`,`photoPet`,`descriptionPet` from Pet WHERE `Pet`.`idUser` = ?";
     const id = req.params.id;
     db.query(sql, [id],(err, result) => {
         if (err) return res.json({Message: "Error inside server"});
@@ -88,7 +106,7 @@ app.get('/ListPet/:id',(req,res) => {
 })
 
 app.get('/ReadPet/:id',(req,res) => {
-    const sql = "SELECT * FROM Pet WHERE idPet = ?";
+    const sql = "select `idPet`,`idUser`,`namePet`,`speciePet`,`racePet`,DATE_FORMAT(`birthdatePet`, '%Y-%m-%d') as birthdatePet ,`genderPet`,`photoPet`,`descriptionPet` FROM Pet WHERE idPet = ?";
     const id = req.params.id;
     db.query(sql,[id], (err,result) => {
         if(err) return res.json({Message: "Error inside server"});

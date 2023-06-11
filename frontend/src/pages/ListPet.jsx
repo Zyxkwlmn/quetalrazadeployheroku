@@ -3,6 +3,9 @@ import Header from '../components/Header';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import {useNavigate, useParams} from 'react-router-dom';
+import '../styles/List.scss';
+import swal from 'sweetalert';
+import mascotas from '@icons/mascotas.png';
 
 
 const ListPet = () => {
@@ -19,17 +22,29 @@ const ListPet = () => {
     const handleDelete = (id) => {
         axios.delete('http://localhost:8080/DeletePet/'+id)
         .then(res=> {
-            alert("Eliminando")
-            location.reload();
+            swal({
+                text: "Eliminando registro",
+                icon: "warning",
+              });
+              setTimeout(function(){
+                location.reload();
+            }, 3000);
         }).catch(err => console.log(err))
     }
     return(
         <>
             <Header />
+            <div className="list-content">
+            <div><h3>Mascotas</h3></div>
+            <div className="encabezado">
+            <div className="imagen"><img src={mascotas} /></div>
             <div>
-                <Link to={`/CreatePet/${id}`}>Nueva Mascota</Link>
+                <input class="input-inset" type="text" placeholder="Buscar"/> 
+                <Link to={`/CreatePet/${id}`} className="button create-button">Nueva Mascota</Link>
             </div>
-           <table>
+            </div>
+            
+           <table className="styled-table">
             <thead>
                 <tr>
                     <th>N°</th>
@@ -38,6 +53,7 @@ const ListPet = () => {
                     <th>Raza</th>
                     <th>Género</th>
                     <th>Fecha Nacimiento</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -50,14 +66,15 @@ const ListPet = () => {
                         <td>{pet.genderPet}</td>
                         <td>{pet.birthdatePet}</td>
                         <td>
-                            <Link to={`/CreateAppo/${pet.idPet}`}>Citas</Link>
-                            <Link to={`/EditPet/${pet.idPet}`}>Editar</Link>
-                            <button onClick={() =>handleDelete(pet.idPet)}>Eliminar</button>
+                            <Link to={`/CreateAppo/${pet.idPet}`} className="button pet-button">Reservar Cita</Link>
+                            <Link to={`/EditPet/${pet.idPet}`} className="button edit-button">Editar</Link>
+                            <a onClick={() =>handleDelete(pet.idPet)} className="button delete-button">Eliminar</a>
                         </td>
                     </tr>
                 })}
             </tbody>
            </table>
+           </div>
         </>  
     );
 }

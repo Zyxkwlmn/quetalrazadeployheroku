@@ -23,8 +23,14 @@ const CreateClient = () => {
         e.preventDefault();
         axios.post('http://localhost:8080/CreateClient',values)
         .then(res => {
-            console.log(res),
-            navigate('/')
+            swal({
+                text: "Cliente registrado",
+                icon: "success",
+              });
+              setTimeout(function(){
+                navigate('/');
+            }, 3000);
+            
         })
         .catch(err => console.log(err))
     }

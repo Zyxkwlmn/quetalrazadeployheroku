@@ -4,6 +4,7 @@ import axios from 'axios';
 import {Link} from 'react-router-dom';
 import '../styles/List.scss';
 import swal from 'sweetalert';
+import person from '@icons/chico.png';
 
 
 const Home = () => {
@@ -32,20 +33,25 @@ const Home = () => {
         <>
             <Header />
             <div className="list-content">
-            <div><h3>Clientes</h3></div>
-            <div>
-                <input class="input-inset" type="text" placeholder="Search"/> 
+            <div><h3>Clientes</h3></div>    
+                <div className="encabezado">
+                    <div className="imagen"><img src={person} /></div>
+                    
+                <div>
+                <input class="input-inset" type="text" placeholder="Buscar"/> 
                 <Link to="/CreateClient" className="button create-button">Nuevo Cliente</Link>
-            </div>
+                </div>
+                </div>
             <div>
            <table className="styled-table">
             <thead>
                 <tr>
                     <th>N°</th>
-                    <th>Nombres</th>
-                    <th>Apellidos</th>
+                    <th>DNI</th>
+                    <th>Nombres y Apellidos</th>
                     <th>Dirección</th>
                     <th>Celular</th>
+                    <th>Correo</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -57,6 +63,8 @@ const Home = () => {
                         <td>{user.nameUser}</td>
                         <td>{user.addressUser}</td>
                         <td>{user.phoneUser}</td>
+                        <td>{user.emailUser}</td>
+
                         <td>
                             <Link to={`/ListPet/${user.idUser}`} className="button pet-button">Mascotas</Link>
                             <Link to={`/EditClient/${user.idUser}`} className="button edit-button">Editar</Link>
