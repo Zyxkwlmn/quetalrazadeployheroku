@@ -97,7 +97,7 @@ app.delete('/DeleteAppo/:id', (req, res) => {
 
 //PET
 app.get('/ListPet/:id',(req,res) => {
-    const sql = "select `idPet`,`idUser`,`namePet`,`speciePet`,`racePet`,DATE_FORMAT(`birthdatePet`, '%Y-%m-%d') as birthdatePet ,`genderPet`,`photoPet`,`descriptionPet` from Pet WHERE `Pet`.`idUser` = ?";
+    const sql = "select idPet,dniOwner,namePet, speciePet,racePet,DATE_FORMAT(`birthdatePet`, '%Y-%m-%d') as birthdatePet ,`genderPet`,`photoPet`,`descriptionPet` from Pet WHERE `Pet`.`dniOwner` = ?";
     const id = req.params.id;
     db.query(sql, [id],(err, result) => {
         if (err) return res.json({Message: "Error inside server"});
@@ -115,17 +115,20 @@ app.get('/ReadPet/:id',(req,res) => {
 })
 
 app.post('/CreatePet/:id', (req,res) => {
-    const sql = "INSERT INTO Pet (`idUser`,`namePet`,`speciePet`,`racePet`,`birthdatePet`,`genderPet`,`photoPet`,`descriptionPet`) VALUES (?)";
+    const sql = "INSERT INTO Pet (dniOwner,namePet, idSpeciePet,idGenderPet, idOriginPet, racePet,colorPet,birthdatePet,particularsignsPet, photoPet) VALUES (?)";
     const id = req.params.id;
     const values = [
         id,
         req.body.name,
         req.body.specie,
-        req.body.race,
-        req.body.birthday,
         req.body.gender,
-        req.body.photo,
-        req.body.description
+        req.body.origin,
+        req.body.race,
+        req.body.color,
+        req.body.birthday,
+        req.body.description,
+        req.body.photo
+        
     ]
 
     db.query(sql, [values],(err,result) => {
@@ -155,7 +158,7 @@ app.delete('/DeletePet/:id', (req, res) => {
 
 //CLIENT
 app.get('/',(req,res) => {
-    const sql = "select * from User";
+    const sql = "select * from Owner";
     db.query(sql, (err, result) => {
         if (err) return res.json({Message: "Error inside server"});
         return res.json(result);
@@ -163,7 +166,7 @@ app.get('/',(req,res) => {
 })
 
 app.get('/ReadClient/:id',(req,res) => {
-    const sql = "SELECT * FROM User WHERE idUser = ?";
+    const sql = "SELECT * FROM Owner WHERE dniOwner = ?";
     const id = req.params.id;
     db.query(sql,[id], (err,result) => {
         if(err) return res.json({Message: "Error inside server"});
@@ -172,26 +175,24 @@ app.get('/ReadClient/:id',(req,res) => {
 })
 
 app.post('/CreateClient', (req,res) => {
-    const sql = "INSERT INTO User (`idUser`,`passwordUser`,`nameUser`, `surnameUser`,`dniUser`,`addressUser`,`emailUser`, `phoneUser`) VALUES (?)";
+    const sql = "CALL CreateOwner(?)";
     const values = [
         req.body.dni,
-        "123456",
         req.body.name,
         req.body.lastname,
-        req.body.dni,
         req.body.address,
         req.body.email,
         req.body.phone
     ]
 
-    db.query(sql, [values],(err,result) => {
+    db.query(sql,[values],(err,result) => {
         if(err) return res.json(err);
         return res.json(result);
     })
 })
 
 app.put('/UpdateClient/:id', (req, res) => {
-    const sql = "UPDATE User SET  `nameUser` = ?, `surnameUser` = ?, `addressUser` = ?, `emailUser` = ?, `phoneUser` = ? WHERE `idUser` = ?";
+    const sql = "UPDATE Owner SET  nameOwner = ?, surnameOwner= ?, addressOwner= ?, emailOwner = ?, phoneOwner = ? WHERE dniOwner = ?";
     const id = req.params.id;
     db.query(sql, [req.body.name, req.body.lastname,req.body.address, req.body.email,req.body.phone,id],(err,result) =>{
         if(err) return res.json({Message: "Error inside server"});
@@ -200,13 +201,32 @@ app.put('/UpdateClient/:id', (req, res) => {
 })
 
 app.delete('/DeleteClient/:id', (req, res) => {
-    const sql = "DELETE FROM User WHERE `idUser` = ?";
+    const sql = "DELETE FROM Owner WHERE dniOwner = ?";
     const id = req.params.id;
     db.query(sql, [id],(err,result) =>{
         if(err) return res.json({Message: "Error inside server"});
         return res.json(result);
     })   
 })
+
+//ATENCIONES
+app.post('/CreateHistory/:id', (req,res) => {
+    const sql = "INSERT INTO ClinicHistory (`idAppointment`,`symptomsHistory`,`diagnosisHistory`,`treatmentHistory`,`commentHistory`) VALUES (?)";
+    const id = req.params.id;
+    const values = [
+        id,
+        req.body.symptoms,
+        req.body.diagnosis,
+        req.body.treatment,
+        req.body.comment,
+    ]
+
+    db.query(sql, [values],(err,result) => {
+        if(err) return res.json(err);
+        return res.json(result);
+    })
+})
+
 
 //ESCUCHA DEL PUERTO
 app.listen(8080, ()=> {

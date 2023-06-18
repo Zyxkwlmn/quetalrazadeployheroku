@@ -12,12 +12,12 @@ const EditClient = () => {
         axios.get('http://localhost:8080/ReadClient/'+id)
         .then(res => {
             console.log(res)
-            setValues({...values, dni:res.data[0].dniUser,
-                name:res.data[0].nameUser,
-                lastname:res.data[0].surnameUser,
-                address:res.data[0].addressUser,
-                email:res.data[0].emailUser,
-                phone:res.data[0].phoneUser});
+            setValues({...values, dni:res.data[0].dniOwner,
+                name:res.data[0].nameOwner,
+                lastname:res.data[0].surnameOwner,
+                address:res.data[0].addressOwner,
+                email:res.data[0].emailOwner,
+                phone:res.data[0].phoneOwner,});
         }).catch(err => console.log(err))
     }, [])
 

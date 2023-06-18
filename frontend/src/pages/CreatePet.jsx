@@ -13,8 +13,10 @@ const CreatePet = () => {
         idUser: id,
         name: '',
         specie: '',
-        race: '',
         gender: '',
+        origin: '',
+        race: '',
+        color: '',
         birthday: '',
         description: '',
         photo: ''
@@ -53,20 +55,31 @@ return(
                 <label for="name" className="label">Especie</label>
                 <input type="text" id="specie" className="input input-name" onChange={e => setValues({...values,specie: e.target.value})}/>
 
-                <label for="name" className="label">Raza</label>
-                <input type="text" id="race" className="input input-name" onChange={e => setValues({...values,race: e.target.value})}/>
-
                 <label for="gender" className="label">Género</label>
                 <select id="gender" name="gender" className="input" onChange={e => setValues({...values,gender: e.target.value})}>
                     <option selected>Seleccionar</option>
-                    <option value="Hembra">Hembra</option>
-                    <option value="Macho">Macho</option>
+                    <option value="1">Hembra</option>
+                    <option value="2">Macho</option>
                 </select>
+
+                <label for="origin" className="label">Procedencia</label>
+                <select id="origin" name="origin" className="input" onChange={e => setValues({...values,origin: e.target.value})}>
+                    <option selected>Seleccionar</option>
+                    <option value="1">Local</option>
+                    <option value="2">Extranjero</option>
+                </select>
+
+                <label for="name" className="label">Raza</label>
+                <input type="text" id="race" className="input input-name" onChange={e => setValues({...values,race: e.target.value})}/>
+
+                <label for="name" className="label">Color</label>
+                <input type="text" id="color" className="input input-name" onChange={e => setValues({...values,color: e.target.value})}/>
+
 
                 <label for="name" className="label">Fecha de Nacimiento</label>
                 <input type="date" id="birthday" className="input input-name" onChange={e => setValues({...values,birthday: e.target.value})}/>
 
-                <label for="name" className="label">Descripción</label>
+                <label for="name" className="label">Señas particulares</label>
                 <textarea className="textarea" rows="3" id="description" onChange={e => setValues({...values,description: e.target.value})}></textarea>
 
                 <label for="password" className="label">¿Deseas que conoscamos más a tu mascota? Sube una foto!</label>

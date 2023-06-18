@@ -11,6 +11,7 @@ import EditPet from '../pages/EditPet';
 import CreateAppo from '../pages/CreateAppo';
 import ListAppo from '../pages/ListAppo';
 import EditAppo from '../pages/EditAppo';
+import CreateHistory from '../pages/CreateHistory';
 import NotFound from '../pages/NotFound';
 import Account from '../containers/Account';
 import '../styles/global.css';
@@ -31,6 +32,7 @@ const App = () => {
                         <Route exact path="/CreateAppo/:id" element={<CreateAppo/>}/>
                         <Route exact path="/ListAppo" element={<ListAppo/>}/>
                         <Route exact path="/EditAppo/:id" element={<EditAppo/>}/>
+                        <Route exact path="/CreateHistory/:id" element={<CreateHistory/>}/>
                         <Route exact path="account" element={<Account/>}/>
                         <Route path="*" element={<NotFound/>}/>
                     </Routes>        

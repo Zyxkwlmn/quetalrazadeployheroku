@@ -59,16 +59,16 @@ const Home = () => {
                 {data.map((user,index) => {
                     return <tr key={index}>
                         <td>{index + 1}</td>
-                        <td>{user.idUser}</td>
-                        <td>{user.nameUser}</td>
-                        <td>{user.addressUser}</td>
-                        <td>{user.phoneUser}</td>
-                        <td>{user.emailUser}</td>
+                        <td>{user.dniOwner}</td>
+                        <td>{user.nameOwner} {user.surnameOwner}</td>
+                        <td>{user.addressOwner}</td>
+                        <td>{user.phoneOwner}</td>
+                        <td>{user.emailOwner}</td>
 
                         <td>
-                            <Link to={`/ListPet/${user.idUser}`} className="button pet-button">Mascotas</Link>
-                            <Link to={`/EditClient/${user.idUser}`} className="button edit-button">Editar</Link>
-                            <a onClick={() =>handleDelete(user.idUser)} className="button delete-button">Eliminar</a>
+                            <Link to={`/ListPet/${user.dniOwner}`} className="button pet-button">Mascotas</Link>
+                            <Link to={`/EditClient/${user.dniOwner}`} className="button edit-button">Editar</Link>
+                            <a onClick={() =>handleDelete(user.dniOwner)} className="button delete-button">Eliminar</a>
                         </td>
                     </tr>
                 })}

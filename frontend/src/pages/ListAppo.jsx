@@ -88,6 +88,7 @@ const ListAppo = () => {
                         <td>{appo.reasonAppointment}</td>
                         <td>{appo.statusAppointment}</td>
                         <td>
+                            <Link to={`/CreateHistory/${appo.idAppointment}`} className="button edit-button">Registrar Atención</Link>
                             <Link to={`/EditAppo/${appo.idAppointment}`} className="button edit-button">Editar</Link>
                             <a onClick={() =>handleDelete(appo.idAppointment)} className="button delete-button">Eliminar</a>
                         </td>
