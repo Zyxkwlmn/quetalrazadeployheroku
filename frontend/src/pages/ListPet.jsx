@@ -61,9 +61,9 @@ const ListPet = () => {
                     return <tr key={index}>
                         <td>{index + 1}</td>
                         <td>{pet.namePet}</td>
-                        <td>{pet.speciePet}</td>
+                        <td>{pet.nameSpeciePet}</td>
                         <td>{pet.racePet}</td>
-                        <td>{pet.genderPet}</td>
+                        <td>{pet.nameGenderPet}</td>
                         <td>{pet.birthdatePet}</td>
                         <td>
                             <Link to={`/CreateAppo/${pet.idPet}`} className="button pet-button">Reservar Cita</Link>

@@ -8,28 +8,56 @@ import swal from 'sweetalert';
 const EditPet = () => {
     const {id} = useParams();
    
+    //Listar género mascota
+    const [data, setData] = useState([])
+    useEffect(()=>{
+        axios.get('http://localhost:8080/ListGender')
+        .then(res => setData(res.data))
+        .catch(err => console.log(err));
+    }, [])
+
+    //Listar procedencia mascota
+    const [dataOrigin, setDataOrigin] = useState([])
+    useEffect(()=>{
+        axios.get('http://localhost:8080/ListOrigin')
+        .then(res => setDataOrigin(res.data))
+        .catch(err => console.log(err));
+    }, [])
+
+    //Listar especie mascota
+    const [dataSpecie, setDataSpecie] = useState([])
+    useEffect(()=>{
+        axios.get('http://localhost:8080/ListSpecie')
+        .then(res => setDataSpecie(res.data))
+        .catch(err => console.log(err));
+    }, [])
+
+    //Enviar datos
     useEffect(() => {
         axios.get('http://localhost:8080/ReadPet/'+id)
         .then(res => {
             console.log(res)
             setValues({...values,
                 name:res.data[0].namePet,
-                specie:res.data[0].speciePet,
+                specie:res.data[0].idSpeciePet,
+                gender:res.data[0].idGenderPet,
+                origin:res.data[0].idOriginPet,
                 race:res.data[0].racePet,
+                color:res.data[0].colorPet,
                 birthday:res.data[0].birthdatePet,
-                gender:res.data[0].genderPet,
-                photo:res.data[0].photoPet,
-                description:res.data[0].descriptionPet});
+                description:res.data[0].particularsignsPet,
+                photo:res.data[0].photoPet});
         }).catch(err => console.log(err))
     }, [])
 
     const [values, setValues] = useState({
         name: '',
         specie: '',
-        race: '',
-        birthday: '',
         gender: '',
-        photo: '',
+        origin: '',
+        race: '',
+        color: '',
+        birthday: '',
         description: ''
     })
 
@@ -61,26 +89,44 @@ return(
             <label for="name" className="label">Nombre</label>
                 <input type="text" id="name" className="input input-name" onChange={e => setValues({...values,name: e.target.value})} value={values.name}/>
 
-                <label for="name" className="label">Especie</label>
-                <input type="text" id="specie" className="input input-name" onChange={e => setValues({...values,specie: e.target.value})} value={values.specie}/>
+                <label for="specie" className="label">Especie</label>
+                <select id="specie" name="specie" className="input" onChange={e => setValues({...values,specie: e.target.value})} value={values.specie}>
+                    <option selected>Seleccionar</option>
+                    {dataSpecie.map((specie,index) => {
+                        return <option value={specie.idSpeciePet}>{specie.nameSpeciePet}</option>
+                    })}  
+                </select>
+
+                <label for="gender" className="label">Género</label>
+                <select id="gender" name="gender" className="input" onChange={e => setValues({...values,gender: e.target.value})} value={values.gender}>
+                    <option selected>Seleccionar</option>
+                    {data.map((gen,index) => {
+                        return <option value={gen.idGenderPet}>{gen.nameGenderPet}</option>
+                    })}    
+                </select>
+
+                <label for="origin" className="label">Procedencia</label>
+                <select id="origin" name="origin" className="input" onChange={e => setValues({...values,origin: e.target.value})} value={values.origin}>
+                    <option selected>Seleccionar</option>
+                    {dataOrigin.map((origin,index) => {
+                        return <option value={origin.idOriginPet}>{origin.nameOriginPet}</option>
+                    })}  
+                </select>
 
                 <label for="name" className="label">Raza</label>
                 <input type="text" id="race" className="input input-name" onChange={e => setValues({...values,race: e.target.value})} value={values.race}/>
 
-                <label for="gender" className="label">Género</label>
-                <select id="gender" name="gender" className="input" onChange={e => setValues({...values,gender: e.target.value})} value={values.gender}>
-                    <option value="Hembra">Hembra</option>
-                    <option value="Macho">Macho</option>
-                </select>
+                <label for="name" className="label">Color</label>
+                <input type="text" id="color" className="input input-name" onChange={e => setValues({...values,color: e.target.value})} value={values.color}/>
 
                 <label for="name" className="label">Fecha de Nacimiento</label>
-                <input type="date" id="birthday" required pattern="\d{4}-\d{2}-\d{2}" className="input input-name" onChange={e => setValues({...values,birthday: e.target.value})} value={values.birthday}/>
+                <input type="date" id="birthday" className="input input-name" onChange={e => setValues({...values,birthday: e.target.value})} value={values.birthday}/>
 
-                <label for="name" className="label">Descripción</label>
+                <label for="name" className="label">Señas particulares</label>
                 <textarea className="textarea" rows="3" id="description" onChange={e => setValues({...values,description: e.target.value})} value={values.description}></textarea>
-                
-                <label for="password" className="label">Fotografía</label>
-                <input type="file" id="photo" placeholder=""/>
+
+                <label for="password" className="label">¿Deseas que conoscamos más a tu mascota? Sube una foto!</label>
+                <input type="file" id="photo" placeholder="" className="file" />
 
                 <input type="submit" value="Actualizar" className="primary-button"/> 
                 <input type="button" value="Descartar" className="secondary-button"/>

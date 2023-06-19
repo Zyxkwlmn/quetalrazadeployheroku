@@ -2,6 +2,9 @@ import express from 'express'
 import mysql from 'mysql'
 import cors from 'cors'
 import jwt from 'jsonwebtoken'
+import path from 'path'
+import multer from 'multer'
+import { fileURLToPath } from 'url';
 
 const app = express();
 app.use(cors());
@@ -14,6 +17,21 @@ const db = mysql.createConnection({
     password: "7Urn3r28#",
     database: "vet"
 })
+
+//Middleware para fotografías
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const diskStorage = multer.diskStorage({
+    destination: path.join(__dirname,'/images'),
+    filename: (req, file, cb) => {
+        cb(null,Date.now() + "_" +file.originalname)
+    } 
+})
+
+const fileUpload = multer({
+    storage: diskStorage
+}).single('imagePet')
 
 //LOGIN
 app.post('/login',(req,res) => {
@@ -97,7 +115,7 @@ app.delete('/DeleteAppo/:id', (req, res) => {
 
 //PET
 app.get('/ListPet/:id',(req,res) => {
-    const sql = "select idPet,dniOwner,namePet, speciePet,racePet,DATE_FORMAT(`birthdatePet`, '%Y-%m-%d') as birthdatePet ,`genderPet`,`photoPet`,`descriptionPet` from Pet WHERE `Pet`.`dniOwner` = ?";
+    const sql = "SELECT idPet,dniOwner,namePet, Pet.idSpeciePet, SpeciePet.nameSpeciePet, Pet.idGenderPet, GenderPet.nameGenderPet, idOriginPet,racePet,colorPet,DATE_FORMAT(birthdatePet, '%Y-%m-%d') as birthdatePet, particularsignsPet, photoPet from vet.Pet INNER JOIN SpeciePet ON Pet.idSpeciePet = SpeciePet.idSpeciePet INNER JOIN GenderPet ON Pet.idGenderPet = GenderPet.idGenderPet WHERE Pet.dniOwner = ?";
     const id = req.params.id;
     db.query(sql, [id],(err, result) => {
         if (err) return res.json({Message: "Error inside server"});
@@ -105,8 +123,37 @@ app.get('/ListPet/:id',(req,res) => {
     })
 })
 
+//Listar género
+app.get('/ListGender',(req,res) => {
+    const sql = "SELECT * FROM GenderPet";
+    db.query(sql, (err, result) => {
+        if (err) return res.json({Message: "Error inside server"});
+        return res.json(result);
+    })
+})
+
+//Listar Procedencia
+app.get('/ListOrigin',(req,res) => {
+    const sql = "SELECT * FROM OriginPet";
+    db.query(sql, (err, result) => {
+        if (err) return res.json({Message: "Error inside server"});
+        return res.json(result);
+    })
+})
+
+//Listar Especie
+app.get('/ListSpecie',(req,res) => {
+    const sql = "SELECT * FROM SpeciePet";
+    db.query(sql, (err, result) => {
+        if (err) return res.json({Message: "Error inside server"});
+        return res.json(result);
+    })
+})
+
+
+
 app.get('/ReadPet/:id',(req,res) => {
-    const sql = "select `idPet`,`idUser`,`namePet`,`speciePet`,`racePet`,DATE_FORMAT(`birthdatePet`, '%Y-%m-%d') as birthdatePet ,`genderPet`,`photoPet`,`descriptionPet` FROM Pet WHERE idPet = ?";
+    const sql = "SELECT idPet,dniOwner,namePet,idSpeciePet, idGenderPet, idOriginPet, racePet, colorPet, DATE_FORMAT(birthdatePet, '%Y-%m-%d') as birthdatePet , particularsignsPet, photoPet FROM Pet WHERE idPet = ?";
     const id = req.params.id;
     db.query(sql,[id], (err,result) => {
         if(err) return res.json({Message: "Error inside server"});
@@ -114,8 +161,8 @@ app.get('/ReadPet/:id',(req,res) => {
     })
 })
 
-app.post('/CreatePet/:id', (req,res) => {
-    const sql = "INSERT INTO Pet (dniOwner,namePet, idSpeciePet,idGenderPet, idOriginPet, racePet,colorPet,birthdatePet,particularsignsPet, photoPet) VALUES (?)";
+app.post('/CreatePet/:id',fileUpload,(req,res) => {
+    const sql = "INSERT INTO Pet (dniOwner,namePet, idSpeciePet,idGenderPet, idOriginPet, racePet,colorPet,birthdatePet,particularsignsPet,photoPet) VALUES (?)";
     const id = req.params.id;
     const values = [
         id,
@@ -128,7 +175,6 @@ app.post('/CreatePet/:id', (req,res) => {
         req.body.birthday,
         req.body.description,
         req.body.photo
-        
     ]
 
     db.query(sql, [values],(err,result) => {
@@ -138,16 +184,16 @@ app.post('/CreatePet/:id', (req,res) => {
 })
 
 app.put('/UpdatePet/:id', (req, res) => {
-    const sql = "UPDATE Pet SET  `namePet` = ?, `speciePet` = ?, `racePet` = ?,`genderPet`  = ?,`descriptionPet` = ? WHERE `idPet` = ?";
+    const sql = "UPDATE Pet SET  namePet = ?, idSpeciePet = ?, idGenderPet = ?, idOriginPet = ?, racePet = ?, colorPet = ?, birthdatePet = ?,particularsignsPet = ? WHERE idPet = ?";
     const id = req.params.id;
-    db.query(sql, [req.body.name,req.body.specie, req.body.race, req.body.gender, req.body.description, id],(err,result) =>{
+    db.query(sql, [req.body.name,req.body.specie,req.body.gender,req.body.origin,req.body.race,req.body.color,req.body.birthday,req.body.description,id],(err,result) =>{
         if(err) return res.json({Message: "Error inside server"});
         return res.json(result);
     })   
 })
 
 app.delete('/DeletePet/:id', (req, res) => {
-    const sql = "DELETE FROM Pet WHERE `idPet` = ?";
+    const sql = "DELETE FROM Pet WHERE idPet = ?";
     const id = req.params.id;
     db.query(sql, [id],(err,result) =>{
         if(err) return res.json({Message: "Error inside server"});

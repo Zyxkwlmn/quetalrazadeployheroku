@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState , Fragment} from 'react';
 import Header from '../components/Header';
 import axios from 'axios';
 import '../styles/Pet.scss';
@@ -9,6 +9,48 @@ const CreatePet = () => {
 
     const {id} = useParams();
 
+    //Listar género mascota
+    const [data, setData] = useState([])
+    useEffect(()=>{
+        axios.get('http://localhost:8080/ListGender')
+        .then(res => setData(res.data))
+        .catch(err => console.log(err));
+    }, [])
+
+    //Listar procedencia mascota
+    const [dataOrigin, setDataOrigin] = useState([])
+    useEffect(()=>{
+        axios.get('http://localhost:8080/ListOrigin')
+        .then(res => setDataOrigin(res.data))
+        .catch(err => console.log(err));
+    }, [])
+
+    //Listar especie mascota
+    const [dataSpecie, setDataSpecie] = useState([])
+    useEffect(()=>{
+        axios.get('http://localhost:8080/ListSpecie')
+        .then(res => setDataSpecie(res.data))
+        .catch(err => console.log(err));
+    }, [])
+
+    //Subir fotografía
+    const [file, setFile] = useState(null);
+    
+    const handleSelected = (e) => {
+        setFile(e.target.files[0])
+    }
+
+    const sendImage= () => {
+        const formdata = new FormData()
+
+        if (file) {
+            formdata.append('imagePet',file)   
+        }
+
+        return formdata
+    }
+
+    //Capturar datos
     const [values, setValues] = useState({
         idUser: id,
         name: '',
@@ -22,6 +64,7 @@ const CreatePet = () => {
         photo: ''
     })
 
+    //Enviar datos
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
@@ -37,6 +80,9 @@ const CreatePet = () => {
             }, 3000);
         })
         .catch(err => console.log(err))
+
+        document.getElementById('photo').value = null
+        setFile(null)
     }
 
 return(
@@ -52,21 +98,28 @@ return(
                 <label for="name" className="label">Nombre</label>
                 <input type="text" id="name" className="input input-name" onChange={e => setValues({...values,name: e.target.value})}/>
 
-                <label for="name" className="label">Especie</label>
-                <input type="text" id="specie" className="input input-name" onChange={e => setValues({...values,specie: e.target.value})}/>
+                <label for="specie" className="label">Especie</label>
+                <select id="specie" name="specie" className="input" onChange={e => setValues({...values,specie: e.target.value})}>
+                    <option selected>Seleccionar</option>
+                    {dataSpecie.map((specie,index) => {
+                        return <option value={specie.idSpeciePet}>{specie.nameSpeciePet}</option>
+                    })}  
+                </select>
 
                 <label for="gender" className="label">Género</label>
                 <select id="gender" name="gender" className="input" onChange={e => setValues({...values,gender: e.target.value})}>
                     <option selected>Seleccionar</option>
-                    <option value="1">Hembra</option>
-                    <option value="2">Macho</option>
+                    {data.map((gen,index) => {
+                        return <option value={gen.idGenderPet}>{gen.nameGenderPet}</option>
+                    })}    
                 </select>
 
                 <label for="origin" className="label">Procedencia</label>
                 <select id="origin" name="origin" className="input" onChange={e => setValues({...values,origin: e.target.value})}>
                     <option selected>Seleccionar</option>
-                    <option value="1">Local</option>
-                    <option value="2">Extranjero</option>
+                    {dataOrigin.map((origin,index) => {
+                        return <option value={origin.idOriginPet}>{origin.nameOriginPet}</option>
+                    })}  
                 </select>
 
                 <label for="name" className="label">Raza</label>
@@ -75,7 +128,6 @@ return(
                 <label for="name" className="label">Color</label>
                 <input type="text" id="color" className="input input-name" onChange={e => setValues({...values,color: e.target.value})}/>
 
-
                 <label for="name" className="label">Fecha de Nacimiento</label>
                 <input type="date" id="birthday" className="input input-name" onChange={e => setValues({...values,birthday: e.target.value})}/>
 
@@ -83,7 +135,7 @@ return(
                 <textarea className="textarea" rows="3" id="description" onChange={e => setValues({...values,description: e.target.value})}></textarea>
 
                 <label for="password" className="label">¿Deseas que conoscamos más a tu mascota? Sube una foto!</label>
-                <input type="file" id="photo" placeholder="" className="file"/>
+                <input type="file" id="photo" placeholder="" className="file" onChange={handleSelected}/>
                 </div>
 
                 <input type="submit" value="Registrar" className="primary-button"/> 
