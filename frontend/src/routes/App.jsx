@@ -14,6 +14,7 @@ import EditAppo from '../pages/EditAppo';
 import CreateHistory from '../pages/CreateHistory';
 import NotFound from '../pages/NotFound';
 import Account from '../containers/Account';
+import Landing from '../pages/Landing';
 import '../styles/global.css';
 
 const App = () => {
@@ -22,7 +23,8 @@ const App = () => {
             <BrowserRouter>
                 <Layout>
                     <Routes>
-                        <Route exact path="/" element={<Home/>}/>
+                        <Route exact path="/" element={<Landing/>}/>
+                        <Route exact path="/home" element={<Home/>}/>
                         <Route exact path="/login" element={<Login/>}/>
                         <Route exact path="/CreateClient" element={<CreateClient/>}/>
                         <Route exact path="/EditClient/:id" element={<EditClient/>}/>
