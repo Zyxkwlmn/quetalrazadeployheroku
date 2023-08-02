@@ -15,6 +15,7 @@ import CreateHistory from '../pages/CreateHistory';
 import NotFound from '../pages/NotFound';
 import Account from '../containers/Account';
 import Landing from '../pages/Landing';
+import Calendar from '../pages/index';
 import '../styles/global.css';
 
 const App = () => {
@@ -26,6 +27,7 @@ const App = () => {
                         <Route exact path="/" element={<Landing/>}/>
                         <Route exact path="/home" element={<Home/>}/>
                         <Route exact path="/login" element={<Login/>}/>
+                        <Route exact path="/calendar" element={<Calendar/>}/>
                         <Route exact path="/CreateClient" element={<CreateClient/>}/>
                         <Route exact path="/EditClient/:id" element={<EditClient/>}/>
                         <Route exact path="/ListPet/:id" element={<ListPet/>}/>

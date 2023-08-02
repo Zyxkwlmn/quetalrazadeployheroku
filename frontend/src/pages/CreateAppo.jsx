@@ -4,6 +4,8 @@ import axios from 'axios';
 import '../styles/Client.scss';
 import {useNavigate, useParams} from 'react-router-dom';
 import swal from 'sweetalert';
+import DemoApp from '../components/DemoApp.jsx';
+import '../styles/index.css';
 
 const CreateAppointment = () => {
     const {id} = useParams();
@@ -92,6 +94,7 @@ return(
             </form>
             </div>
         </div>
+        <div><DemoApp /></div>
     </>
 )
 }
