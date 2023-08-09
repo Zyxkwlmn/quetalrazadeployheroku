@@ -18,7 +18,7 @@ const Header = () => {
 
             <ul>
               <li>
-                <a href="/">Clientes</a>
+                <a href="/home">Clientes</a>
               </li>
               <li>
                 <a href="/ListAllPet">Mascotas</a>
@@ -27,7 +27,7 @@ const Header = () => {
                 <a href="/ListAppo">Citas</a>
               </li>
               <li>
-                <a href="">Historial</a>
+                <a href="">Atenciones</a>
               </li>
               <li>
                 <a href="">Inventario</a>

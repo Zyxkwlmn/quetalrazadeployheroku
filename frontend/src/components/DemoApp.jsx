@@ -25,7 +25,7 @@ export default class DemoApp extends React.Component {
               center: 'title',
               right: 'dayGridMonth,timeGridWeek,timeGridDay'
             }}
-            initialView='dayGridMonth'
+            initialView='timeGridWeek'
             editable={true}
             selectable={true}
             selectMirror={true}

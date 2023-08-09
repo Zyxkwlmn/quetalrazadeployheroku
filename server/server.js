@@ -61,7 +61,7 @@ app.get('/ListAppo/:id',(req,res) => {
 })
 
 app.get('/ListAppoAll',(req,res) => {
-    const sql = "SELECT `Appointment`.`idAppointment`,`User`.`nameUser`,`User`.`phoneUser`, `Pet`.`namePet`, `Pet`.`speciePet`, `Pet`.`genderPet`, DATE_FORMAT(`Appointment`.`dateAppointment`, '%Y-%m-%d') as dateAppointment , `Appointment`.`reasonAppointment`, `Appointment`.`statusAppointment`,`Appointment`.`timeAppointment` FROM Appointment INNER JOIN Pet ON `Appointment`.`idPet` = `Pet`.`idPet` INNER JOIN User ON `User`.`idUser` = `Pet`.`idUser`";
+    const sql = "SELECT Appointment.idAppointment, VetServices.nameVetServices,DATE_FORMAT(Appointment.dateAppointment, '%Y-%m-%d') as dateAppointment, Appointment.timeAppointment, Owner.nameOwner, Owner.surnameOwner, Owner.phoneOwner, Pet.namePet, Pet.idSpeciePet,SpeciePet.nameSpeciePet, GenderPet.nameGenderPet,  Appointment.statusAppointment FROM Appointment INNER JOIN Pet ON Appointment.idPet = Pet.idPet INNER JOIN Owner ON Owner.dniOwner = Pet.dniOwner INNER JOIN SpeciePet On SpeciePet.idSpeciePet = Pet.idSpeciePet INNER JOIN GenderPet On GenderPet.idGenderPet = Pet.idGenderPet INNER JOIN VetServices On VetServices.idVetServices = Appointment.idVetServices";
     db.query(sql, (err, result) => {
         if (err) return res.json({Message: "Error inside server"});
         return res.json(result);
@@ -69,7 +69,7 @@ app.get('/ListAppoAll',(req,res) => {
 })
 
 app.get('/ReadAppo/:id',(req,res) => {
-    const sql = "SELECT `Appointment`.`idAppointment`, `Pet`.`namePet`, `Pet`.`speciePet`, `Pet`.`genderPet`, DATE_FORMAT(`Appointment`.`dateAppointment`, '%Y-%m-%d') as dateAppointment, `Appointment`.`commentAppointment`, `Appointment`.`statusAppointment`,`Appointment`.`timeAppointment`, `Appointment`.`reasonAppointment`  FROM Appointment INNER JOIN Pet ON `Appointment`.`idPet` = `Pet`.`idPet` WHERE `Appointment`.`idAppointment` = ?";
+    const sql = "SELECT Appointment.idAppointment, Pet.namePet, Pet.idSpeciePet, Pet.idGenderPet, DATE_FORMAT(Appointment.dateAppointment, '%Y-%m-%d') as dateAppointment, Appointment.commentAppointment, Appointment.statusAppointment,Appointment.timeAppointment FROM Appointment INNER JOIN Pet ON Appointment.idPet = Pet.idPet WHERE Appointment.idAppointment = ?";
     const id = req.params.id;
     db.query(sql,[id], (err,result) => {
         if(err) return res.json({Message: "Error inside server"});
@@ -78,14 +78,14 @@ app.get('/ReadAppo/:id',(req,res) => {
 })
 
 app.post('/CreateAppo', (req,res) => {
-    const sql = "INSERT INTO Appointment (`idPet`, `dateAppointment`, `reasonAppointment`, `commentAppointment`, `statusAppointment`,`timeAppointment`) VALUES (?)";
+    const sql = "INSERT INTO Appointment (idPet, idVetServices, dateAppointment, timeAppointment, commentAppointment,statusAppointment) VALUES (?)";
     const values = [
         req.body.idPet,
+        req.body.service,
         req.body.dateAppo,
-        req.body.reason,
+        req.body.timeAppo,
         req.body.comment,
-        req.body.status,
-        req.body.timeAppo
+        req.body.status
     ]
 
     db.query(sql, [values],(err,result) => {
@@ -114,6 +114,9 @@ app.delete('/DeleteAppo/:id', (req, res) => {
 
 
 //PET
+
+
+
 app.get('/ListPet/:id',(req,res) => {
     const sql = "SELECT idPet,dniOwner,namePet, Pet.idSpeciePet, SpeciePet.nameSpeciePet, Pet.idGenderPet, GenderPet.nameGenderPet, idOriginPet,racePet,colorPet,DATE_FORMAT(birthdatePet, '%Y-%m-%d') as birthdatePet, particularsignsPet, photoPet from vet.Pet INNER JOIN SpeciePet ON Pet.idSpeciePet = SpeciePet.idSpeciePet INNER JOIN GenderPet ON Pet.idGenderPet = GenderPet.idGenderPet WHERE Pet.dniOwner = ?";
     const id = req.params.id;
@@ -149,8 +152,6 @@ app.get('/ListSpecie',(req,res) => {
         return res.json(result);
     })
 })
-
-
 
 app.get('/ReadPet/:id',(req,res) => {
     const sql = "SELECT idPet,dniOwner,namePet,idSpeciePet, idGenderPet, idOriginPet, racePet, colorPet, DATE_FORMAT(birthdatePet, '%Y-%m-%d') as birthdatePet , particularsignsPet, photoPet FROM Pet WHERE idPet = ?";
@@ -273,6 +274,49 @@ app.post('/CreateHistory/:id', (req,res) => {
     })
 })
 
+//SERVICIOS
+app.get('/ListVetService',(req,res) => {
+    const sql = "SELECT * FROM VetServices";
+    db.query(sql, (err, result) => {
+        if (err) return res.json({Message: "Error inside server"});
+        return res.json(result);
+    })
+})
+
+//GROOMING
+app.get('/ListDataPet/:id',(req,res) => {
+    const sql = "SELECT Appointment.idAppointment, Pet.namePet, SpeciePet.nameSpeciePet FROM vet.Appointment INNER JOIN vet.Pet ON Appointment.idPet = Pet.idPet  INNER JOIN vet.SpeciePet On SpeciePet.idSpeciePet = Pet.idSpeciePet where Appointment.idAppointment = ? ";
+    const id = req.params.id;
+    db.query(sql,[id], (err,result) => {
+        if (err) return res.json({Message: "Error inside server"});
+        return res.json(result);
+    })
+})
+
+app.get('/ListServicesGrooming',(req,res) => {
+    const sql = "SELECT * FROM ServicesGrooming";
+    db.query(sql, (err, result) => {
+        if (err) return res.json({Message: "Error inside server"});
+        return res.json(result);
+    })
+})
+
+app.post('/CreateGrooming/:id', (req,res) => {
+    const sql = "CALL vet.CreateGrooming(?)";
+    const id = req.params.id;
+    const values = [
+        id,
+        req.body.photoBefore,
+        req.body.photoAfter,
+        req.body.comment,
+        req.body.services
+    ]
+
+    db.query(sql, [values],(err,result) => {
+        if(err) return res.json(err);
+        return res.json(result);
+    })
+})
 
 //ESCUCHA DEL PUERTO
 app.listen(8080, ()=> {

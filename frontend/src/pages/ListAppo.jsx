@@ -21,7 +21,7 @@ const ListAppo = () => {
             icon: "info",
           });
           setTimeout(function(){
-            navigate('/');
+            navigate('/ListAppo');
         }, 3000);
     }
 
@@ -78,17 +78,17 @@ const ListAppo = () => {
                 {data.map((appo,index) => {
                     return <tr key={index}>
                         <td>{index + 1}</td>
-                        <td>{appo.nameUser}</td>
-                        <td>{appo.phoneUser}</td>
+                        <td>{appo.nameOwner} {appo.surnameOwner}</td>
+                        <td>{appo.phoneOwner}</td>
                         <td>{appo.namePet}</td>
-                        <td>{appo.speciePet}</td>
-                        <td>{appo.genderPet}</td>
+                        <td>{appo.nameSpeciePet}</td>
+                        <td>{appo.nameGenderPet}</td>
                         <td>{appo.dateAppointment}</td>
                         <td>{appo.timeAppointment}</td>
-                        <td>{appo.reasonAppointment}</td>
+                        <td>{appo.nameVetServices}</td>
                         <td>{appo.statusAppointment}</td>
                         <td>
-                            <Link to={`/CreateHistory/${appo.idAppointment}`} className="button edit-button">Registrar Atención</Link>
+                            <Link to={`/CreateHistory/${appo.idAppointment}`} className="button pet-button">Registrar Atención</Link>
                             <Link to={`/EditAppo/${appo.idAppointment}`} className="button edit-button">Editar</Link>
                             <a onClick={() =>handleDelete(appo.idAppointment)} className="button delete-button">Eliminar</a>
                         </td>

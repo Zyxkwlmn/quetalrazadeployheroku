@@ -10,6 +10,14 @@ import '../styles/index.css';
 const CreateAppointment = () => {
     const {id} = useParams();
 
+    //Listar servicio
+    const [service, setService] = useState([])
+    useEffect(()=>{
+        axios.get('http://localhost:8080/ListVetService')
+        .then(res => setService(res.data))
+        .catch(err => console.log(err));
+    }, [])
+
     //Mostrar nombre mascota
     useEffect(() => {
         axios.get('http://localhost:8080/ReadPet/'+id)
@@ -29,11 +37,11 @@ const CreateAppointment = () => {
     //Crear cita
     const [values, setValues] = useState({
         idPet:id,
+        service: '',
         dateAppo: '',
         timeAppo: '',
-        reason: '',
         comment: '',
-        status: ''
+        status: '1'
     })
 
     const navigate = useNavigate();
@@ -47,7 +55,7 @@ const CreateAppointment = () => {
                 icon: "success",
               });
               setTimeout(function(){
-                navigate('/ListAppo/'+id);
+                navigate('/ListAppo');
             }, 3000);
             
         })
@@ -72,19 +80,16 @@ return(
                 <label for="name" className="label">Fecha</label>
                 <input type="time" id="timeAppo" className="input input-text" onChange={e => setValues({...values,timeAppo: e.target.value})}/>
 
-                <label for="name" className="label">Motivo</label>
-                <input type="text" id="reason" className="input input-text" onChange={e => setValues({...values,reason: e.target.value})}/>
+                <label for="service" className="label">Servicio</label>
+                <select id="service" name="service" className="input" onChange={e => setValues({...values,service: e.target.value})}>
+                    <option selected>Seleccionar</option>
+                    {service.map((gen,index) => {
+                        return <option value={gen.idVetServices}>{gen.nameVetServices}</option>
+                    })}    
+                </select>
 
                 <label for="name" className="label">Comentarios generales</label>
                 <input type="text" id="comment" className="input input-text" onChange={e => setValues({...values,comment: e.target.value})}/>
-
-                <label for="status" className="label">Estatus</label>
-                <select id="status" name="status" className="input" onChange={e => setValues({...values,status: e.target.value})}>
-                    <option selected>Seleccionar</option>
-                    <option value="Programado">Programado</option>
-                    <option value="Realizado">Realizado</option>
-                    <option value="Cancelado">Cancelado</option>
-                </select>
                 
                 <input type="submit" value="Reservar" className="primary-button"/> 
                 <input type="button" value="Descartar" className="secondary-button"/>

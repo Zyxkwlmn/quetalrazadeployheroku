@@ -16,6 +16,7 @@ import NotFound from '../pages/NotFound';
 import Account from '../containers/Account';
 import Landing from '../pages/Landing';
 import Calendar from '../pages/index';
+import CreateGrooming from '../pages/CreateGrooming';
 import '../styles/global.css';
 
 const App = () => {
@@ -37,6 +38,7 @@ const App = () => {
                         <Route exact path="/ListAppo" element={<ListAppo/>}/>
                         <Route exact path="/EditAppo/:id" element={<EditAppo/>}/>
                         <Route exact path="/CreateHistory/:id" element={<CreateHistory/>}/>
+                        <Route exact path="/CreateGrooming/:id" element={<CreateGrooming/>}/>
                         <Route exact path="account" element={<Account/>}/>
                         <Route path="*" element={<NotFound/>}/>
                     </Routes>        
