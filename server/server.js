@@ -9,6 +9,7 @@ import { fileURLToPath } from 'url';
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.static('public'))
 
 //Conexión a la base de datos
 const db = mysql.createConnection({
@@ -18,20 +19,23 @@ const db = mysql.createConnection({
     database: "vet"
 })
 
-//Middleware para fotografías
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const diskStorage = multer.diskStorage({
-    destination: path.join(__dirname,'/images'),
+//SUBIR FOTOGRAFIAS
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/images')
+    },
     filename: (req, file, cb) => {
-        cb(null,Date.now() + "_" +file.originalname)
-    } 
+        cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname))
+    }
 })
 
-const fileUpload = multer({
-    storage: diskStorage
-}).single('imagePet')
+const upload = multer({
+    storage: storage
+})
+
+app.post('/upload', upload.single('file'),(req, res) => {
+    return res.json(req.file.filename)
+})
 
 //LOGIN
 app.post('/login',(req,res) => {
@@ -162,8 +166,8 @@ app.get('/ReadPet/:id',(req,res) => {
     })
 })
 
-app.post('/CreatePet/:id',fileUpload,(req,res) => {
-    const sql = "INSERT INTO Pet (dniOwner,namePet, idSpeciePet,idGenderPet, idOriginPet, racePet,colorPet,birthdatePet,particularsignsPet,photoPet) VALUES (?)";
+app.post('/CreatePet/:id',(req,res) => {
+    const sql = "INSERT INTO Pet (dniOwner,namePet, idSpeciePet,idGenderPet, idOriginPet, racePet,colorPet,birthdatePet,particularsignsPet, photoPet) VALUES (?)";
     const id = req.params.id;
     const values = [
         id,
@@ -175,7 +179,7 @@ app.post('/CreatePet/:id',fileUpload,(req,res) => {
         req.body.color,
         req.body.birthday,
         req.body.description,
-        req.body.photo
+        req.body.photoFile
     ]
 
     db.query(sql, [values],(err,result) => {
@@ -185,9 +189,9 @@ app.post('/CreatePet/:id',fileUpload,(req,res) => {
 })
 
 app.put('/UpdatePet/:id', (req, res) => {
-    const sql = "UPDATE Pet SET  namePet = ?, idSpeciePet = ?, idGenderPet = ?, idOriginPet = ?, racePet = ?, colorPet = ?, birthdatePet = ?,particularsignsPet = ? WHERE idPet = ?";
+    const sql = "UPDATE Pet SET  namePet = ?, idSpeciePet = ?, idGenderPet = ?, idOriginPet = ?, racePet = ?, colorPet = ?, birthdatePet = ?,particularsignsPet = ?, photoPet = ? WHERE idPet = ?";
     const id = req.params.id;
-    db.query(sql, [req.body.name,req.body.specie,req.body.gender,req.body.origin,req.body.race,req.body.color,req.body.birthday,req.body.description,id],(err,result) =>{
+    db.query(sql, [req.body.name,req.body.specie,req.body.gender,req.body.origin,req.body.race,req.body.color,req.body.birthday,req.body.description,req.body.photoFile,id],(err,result) =>{
         if(err) return res.json({Message: "Error inside server"});
         return res.json(result);
     })   

@@ -32,11 +32,10 @@ const EditPet = () => {
         .catch(err => console.log(err));
     }, [])
 
-    //Enviar datos
+    //Leer datos
     useEffect(() => {
         axios.get('http://localhost:8080/ReadPet/'+id)
         .then(res => {
-            console.log(res)
             setValues({...values,
                 name:res.data[0].namePet,
                 specie:res.data[0].idSpeciePet,
@@ -45,10 +44,26 @@ const EditPet = () => {
                 race:res.data[0].racePet,
                 color:res.data[0].colorPet,
                 birthday:res.data[0].birthdatePet,
-                description:res.data[0].particularsignsPet,
-                photo:res.data[0].photoPet});
+                description:res.data[0].particularsignsPet});
+            setImage(res.data[0].photoPet);
         }).catch(err => console.log(err))
     }, [])
+
+    //Subir fotografía
+    const [file, setFile] = useState()
+
+    const [image, setImage] = useState()
+    
+    const handleUpload = (e) => {
+        const formdata = new FormData()
+        formdata.append('file', file)
+        axios.post('http://localhost:8080/upload',formdata)
+        .then(function (res) {
+            setImage(res.data);
+            setValues({...values,photoFile: res.data})
+        })
+        .catch(err => console.log(err))
+    }
 
     const [values, setValues] = useState({
         name: '',
@@ -58,7 +73,8 @@ const EditPet = () => {
         race: '',
         color: '',
         birthday: '',
-        description: ''
+        description: '',
+        photoFile: ''
     })
 
     const navigate = useNavigate();
@@ -72,9 +88,9 @@ const EditPet = () => {
                 text: "Registro de mascota actualizado",
                 icon: "success",
               });
-              setTimeout(function(){
-                navigate('/');
-            }, 3000);
+            //   setTimeout(function(){
+            //     navigate('/');
+            // }, 3000);
         }).catch(err => console.log(err))
     }
 return(
@@ -125,9 +141,10 @@ return(
                 <label for="name" className="label">Señas particulares</label>
                 <textarea className="textarea" rows="3" id="description" onChange={e => setValues({...values,description: e.target.value})} value={values.description}></textarea>
 
-                <label for="password" className="label">¿Deseas que conoscamos más a tu mascota? Sube una foto!</label>
-                <input type="file" id="photo" placeholder="" className="file" />
-
+                <label for="photo" className="label">Foto</label>
+                <input type="file" id="photo" placeholder="" className="file" onChange={e => setFile(e.target.files[0])} accept=".jpg, .jpeg, .png"/>
+                <input type="button" value="Cargar imagen" className="primary-button" onClick={handleUpload}/> 
+                <img src={`http://localhost:8080/images/`+ image} alt="" width="50%"/>
                 <input type="submit" value="Actualizar" className="primary-button"/> 
                 <input type="button" value="Descartar" className="secondary-button"/>
                                

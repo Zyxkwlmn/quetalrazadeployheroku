@@ -29,25 +29,24 @@ const CreatePet = () => {
     const [dataSpecie, setDataSpecie] = useState([])
     useEffect(()=>{
         axios.get('http://localhost:8080/ListSpecie')
-        .then(res => setDataSpecie(res.data))
+        .then( res => setDataSpecie(res.data))
         .catch(err => console.log(err));
     }, [])
 
     //Subir fotografía
-    const [file, setFile] = useState(null);
-    
-    const handleSelected = (e) => {
-        setFile(e.target.files[0])
-    }
+    const [file, setFile] = useState()
 
-    const sendImage= () => {
+    const [image, setImage] = useState()
+
+    const handleUpload = (e) => {
         const formdata = new FormData()
-
-        if (file) {
-            formdata.append('imagePet',file)   
-        }
-
-        return formdata
+        formdata.append('file', file)
+        axios.post('http://localhost:8080/upload',formdata)
+        .then(function (res) {
+            setImage(res.data);
+            setValues({...values,photoFile: res.data})
+        })
+        .catch(err => console.log(err))
     }
 
     //Capturar datos
@@ -61,7 +60,7 @@ const CreatePet = () => {
         color: '',
         birthday: '',
         description: '',
-        photo: ''
+        photoFile: ''
     })
 
     //Enviar datos
@@ -69,20 +68,17 @@ const CreatePet = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:8080/CreatePet/'+id,values)
+        axios.post('http://localhost:8080/CreatePet/'+id, values)
         .then(res => {
             swal({
                 text: "Mascota registrada",
                 icon: "success",
               });
-              setTimeout(function(){
-                navigate('/ListPet/'+id);
-            }, 3000);
+            //   setTimeout(function(){
+            //     navigate('/ListPet/'+id);
+            // }, 3000);
         })
         .catch(err => console.log(err))
-
-        document.getElementById('photo').value = null
-        setFile(null)
     }
 
 return(
@@ -134,8 +130,10 @@ return(
                 <label for="name" className="label">Señas particulares</label>
                 <textarea className="textarea" rows="3" id="description" onChange={e => setValues({...values,description: e.target.value})}></textarea>
 
-                <label for="password" className="label">¿Deseas que conoscamos más a tu mascota? Sube una foto!</label>
-                <input type="file" id="photo" placeholder="" className="file" onChange={handleSelected}/>
+                <label for="photo" className="label">¿Deseas que conoscamos más a tu mascota? Sube una foto!</label>
+                <input type="file" id="photo" placeholder="" className="file" onChange={e => setFile(e.target.files[0])} accept=".jpg, .jpeg, .png"/>
+                <input type="button" value="Cargar imagen" className="primary-button" onClick={handleUpload}/> 
+                <img src={`http://localhost:8080/images/`+ image} alt="" width="50%"/>
                 </div>
 
                 <input type="submit" value="Registrar" className="primary-button"/> 
