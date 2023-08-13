@@ -99,7 +99,7 @@ const ListInventory = () => {
            </table>
            </div>
         </div>
-            </>  
+        </>  
     );
 }
 

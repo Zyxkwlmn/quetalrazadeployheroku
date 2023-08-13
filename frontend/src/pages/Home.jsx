@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
+import Sidebar from '../components/Sidebar';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import '../styles/List.scss';
