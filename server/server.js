@@ -34,8 +34,10 @@ const upload = multer({
 })
 
 app.post('/upload', upload.single('file'),(req, res) => {
+    console.log(req.file.filename)
     return res.json(req.file.filename)
 })
+
 
 //LOGIN
 app.post('/login',(req,res) => {
@@ -310,8 +312,8 @@ app.post('/CreateGrooming/:id', (req,res) => {
     const id = req.params.id;
     const values = [
         id,
-        req.body.photoBefore,
-        req.body.photoAfter,
+        req.body.xphotoBefore,
+        req.body.xphotoAfter,
         req.body.comment,
         req.body.services
     ]
@@ -321,6 +323,40 @@ app.post('/CreateGrooming/:id', (req,res) => {
         return res.json(result);
     })
 })
+
+//PETCARE
+app.get('/ListSymptoms',(req,res) => {
+    const sql = "SELECT * FROM SymptomsPet";
+    db.query(sql, (err, result) => {
+        if (err) return res.json({Message: "Error inside server"});
+        return res.json(result);
+    })
+})
+
+app.get('/ListDiagnosis',(req,res) => {
+    const sql = "SELECT * FROM DiagnosisPet";
+    db.query(sql, (err, result) => {
+        if (err) return res.json({Message: "Error inside server"});
+        return res.json(result);
+    })
+})
+
+app.get('/ListDiseases',(req,res) => {
+    const sql = "SELECT * FROM DiseasesPet";
+    db.query(sql, (err, result) => {
+        if (err) return res.json({Message: "Error inside server"});
+        return res.json(result);
+    })
+})
+
+app.get('/ListVaccines',(req,res) => {
+    const sql = "SELECT * FROM Vaccine";
+    db.query(sql, (err, result) => {
+        if (err) return res.json({Message: "Error inside server"});
+        return res.json(result);
+    })
+})
+
 
 //ESCUCHA DEL PUERTO
 app.listen(8080, ()=> {

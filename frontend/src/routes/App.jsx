@@ -17,6 +17,12 @@ import Account from '../containers/Account';
 import Landing from '../pages/Landing';
 import Calendar from '../pages/index';
 import CreateGrooming from '../pages/CreateGrooming';
+import CreateCare from '../pages/CreateCare';
+import CreateVaccine from '../pages/CreateVaccine';
+import CreateMedicine from '../pages/CreateMedicine';
+import CreateProduct from '../pages/CreateProduct';
+import ListCare from '../pages/ListCare';
+import ListInventory from '../pages/ListInventory';
 import '../styles/global.css';
 
 const App = () => {
@@ -39,6 +45,12 @@ const App = () => {
                         <Route exact path="/EditAppo/:id" element={<EditAppo/>}/>
                         <Route exact path="/CreateHistory/:id" element={<CreateHistory/>}/>
                         <Route exact path="/CreateGrooming/:id" element={<CreateGrooming/>}/>
+                        <Route exact path="/CreateCare/:id" element={<CreateCare/>}/>
+                        <Route exact path="/CreateVaccine/:id" element={<CreateVaccine/>}/>
+                        <Route exact path="/CreateMedicine" element={<CreateMedicine/>}/>
+                        <Route exact path="/CreateProduct" element={<CreateProduct/>}/>
+                        <Route exact path="/ListCare" element={<ListCare/>}/>
+                        <Route exact path="/ListInventory" element={<ListInventory/>}/>
                         <Route exact path="account" element={<Account/>}/>
                         <Route path="*" element={<NotFound/>}/>
                     </Routes>        

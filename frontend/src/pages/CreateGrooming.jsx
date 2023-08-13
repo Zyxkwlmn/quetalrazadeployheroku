@@ -26,28 +26,49 @@ const CreateGrooming = () => {
     }, [])
 
     //Subir fotografía
-    const [file, setFile] = useState(null);
-    
-    const handleSelected = (e) => {
-        setFile(e.target.files[0])
-    }
+    const [file, setFile] = useState({
+        xphoto: '',
+        yphoto: ''
+    })
 
-    const sendImage= () => {
+    const [image, setImage] = useState({
+        photo1: '',
+        photo2: ''
+    })
+
+    const handleUpload = (e) => {
+        
+        //PHOTO1
         const formdata = new FormData()
+        formdata.append('file', file.xphoto)
+        axios.post('http://localhost:8080/upload',formdata)
+        .then(function (res) {
+            console.log(res.data)
+            setImage({...image,photo1: res.data});
+            setValues({...values,xphotoBefore: res.data})
+            console.log(values)     
+        })
+        .catch(err => console.log(err))
 
-        if (file) {
-            formdata.append('imagePet',file)   
-        }
-
-        return formdata
+        //PHOTO2
+        const formdata2 = new FormData()
+        formdata2.append('file', file.photo2)
+        axios.post('http://localhost:8080/upload',formdata2)
+        .then(function (res) {
+            console.log(res.data)
+            setImage({...image,yphoto: res.data});
+            setValues({...values,xphotoAfter: res.data})
+            console.log(values)  
+        })
+        .catch(err => console.log(err))
     }
 
     //Capturar datos
     const [values, setValues] = useState({
         idAppo: id,
         services: '',
-        photoBefore: '',
-        photoAfter: '',
+        xphotoBefore: '',
+        xphotoAfter: '',
         comment: ''   
     })
 
@@ -67,9 +88,6 @@ const CreateGrooming = () => {
             // }, 3000);
         })
         .catch(err => console.log(err))
-
-        // document.getElementById('photo').value = null
-        // setFile(null)
     }
 
 return(
@@ -83,21 +101,25 @@ return(
             <form action="/" className="form" onSubmit={handleSubmit}>
 
                 <div>{dataPet.map((pet,index) => {
-                        return <span>{pet.namePet} {pet.nameSpeciePet}</span>
+                        return <span>Nombre mascota: {pet.namePet} <br/>Especie: {pet.nameSpeciePet}</span>
 
                 })} </div>
 
                 <label for="services" className="label">Servicios Grooming</label>
                 {dataGroo.map((groo,index) => {
                         return <label><input type="checkbox" id="services" className="input input-name" value={groo.idServicesGrooming} onChange={e => setValues({...values,services: e.target.value})}/>{groo.nameServicesGrooming}</label>
-                    })}
+                })}
                 
-                <label for="photoBefore" className="label">Subir foto antes</label>
-                <input type="file" id="photoBefore" placeholder="" className="file" onChange={e => setValues({...values,photoBefore: e.target.value})}/>
+                <label for="photoBefore" className="label">Foto antes</label>
+                <input type="file" id="photoBefore" placeholder="" className="file" onChange={e => setFile({...file,photo1: e.target.files[0]})} accept=".jpg, .jpeg, .png"/>
+                <img src={`http://localhost:8080/images/`+ image.xphoto} alt="" width="50%"/>
 
-                <label for="photoAfter" className="label">Subir foto despúes</label>
-                <input type="file" id="photoAfter" placeholder="" className="file" onChange={e => setValues({...values,photoAfter: e.target.value})}/>
-      
+                <label for="photoAfter" className="label">Foto después</label>
+                <input type="file" id="photoAfter" placeholder="" className="file" onChange={e => setFile({...file,photo2: e.target.files[0]})} accept=".jpg, .jpeg, .png"/>
+                <img src={`http://localhost:8080/images/`+ image.yphoto} alt="" width="50%"/>
+
+                <input type="button" value="Cargar imágenes" className="primary-button" onClick={handleUpload}/> 
+
                 <label for="comment" className="label">Comentarios</label>
                 <textarea className="textarea" rows="3" id="comment" onChange={e => setValues({...values,comment: e.target.value})}></textarea>
 
